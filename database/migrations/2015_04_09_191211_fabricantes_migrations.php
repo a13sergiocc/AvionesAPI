@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAvionsTable extends Migration {
+class FabricantesMigrations extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,9 +12,14 @@ class CreateAvionsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('avions', function(Blueprint $table)
+		Schema::create('fabricantes', function(Blueprint $table)
 		{
+			// Campos de la tabla
 			$table->increments('id');
+			$table->string('nombre');
+			$table->string('direccion');
+			$table->string('telefono');
+
 			$table->timestamps();
 		});
 	}
@@ -26,7 +31,7 @@ class CreateAvionsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('avions');
+		Schema::drop('fabricantes');
 	}
 
 }
