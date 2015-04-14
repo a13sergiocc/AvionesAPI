@@ -11,6 +11,7 @@
 |
 */
 
+/*
 Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
@@ -19,3 +20,13 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+*/
+
+Route::get('/', function() {
+	return 'Bienvenido API RESTful de aviones.';
+});
+
+// Creamos rutas nuevas para los controllers
+Route::resource('fabricantes', 'FabricanteController', ['except' => ['create']]);
+
+Route::resource('aviones', 'AvionController');
