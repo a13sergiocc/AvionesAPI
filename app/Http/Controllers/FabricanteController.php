@@ -103,7 +103,16 @@ class FabricanteController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		// Comprobamos si el fabricante existe	
+		$fabricante = Fabricante::find($id);
+
+		if(!$fabricante) {
+			return response()->json(['errors'=>Array(['code'=>404, 'message' => 'no se encuentra fabricante con ese código'])], 404);			
+		}
+
+		$fabricante->delete();
+		// Deolvemos código 204 "No content"
+		return response()->json(['code'=> 204, 'message' => 'se ha borrado el fabricante'], 204);			
 	}
 
 }
