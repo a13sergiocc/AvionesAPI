@@ -22,6 +22,7 @@ Route::controllers([
 ]);
 */
 
+// Ruta inicial
 Route::get('/', function() {
 	return 'Bienvenido API RESTful de aviones.';
 });
