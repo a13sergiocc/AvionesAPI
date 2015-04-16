@@ -5,11 +5,13 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+
 // Cargamos fabricante
+use App\Fabricante;
 use App\Avion;
 use Response;
 
-class AvionController extends Controller {
+class FabricanteAvionController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -21,21 +23,38 @@ class AvionController extends Controller {
 		return response()->json(['status'=>'ok', 'data'=>Avion::all()], 200);
 	}
 
+
 	/**
-	 * Display the specified resource.
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		//
+	}
+
+
+	/**
+	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function update($id)
 	{
-		$avion = Avion::find($id);
-
-		if(!$avion) {
-			return response()->json(['errors'=>['code'=>404, 'message'=>'No se encuentra un avión con ese código']], 404);
-		}
-		return response()->json(['status'=>'ok', 'data'=>$avion], 200);
+		//
 	}
 
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		//
+	}
 
 }

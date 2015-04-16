@@ -28,6 +28,10 @@ Route::get('/', function() {
 });
 
 // Creamos rutas nuevas para los controllers
-Route::resource('fabricantes', 'FabricanteController', ['except' => ['create']]);
+Route::resource('fabricantes', 'FabricanteController', ['except' => ['create', 'edit']]);
 
-Route::resource('aviones', 'AvionController');
+// Recurso anidado fabricantes aviones
+Route::resource('fabricantes.aviones', 'FabricanteAvionController', ['except' => ['create', 'edit', 'show']]);
+
+// Ruta aviones
+Route::resource('aviones', 'AvionController', ['only' => ['index', 'show']]);
