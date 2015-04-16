@@ -46,7 +46,7 @@ class FabricanteController extends Controller {
 		if (!$request->input('nombre') || !$request->input('direccion') || !$request->input('telefono')) {
 			return response()->json(['errors'=>array(['code'=>422, 'message' => 'Faltan datos necesarios para procesar el alta'])], 422);
 		}
-	
+
 		// Insertamos datos en la tabla
 		$nuevoFabricante = Fabricante::create($request->all());
 
@@ -90,9 +90,72 @@ class FabricanteController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($id, Request $request)
 	{
-		//
+		// Comprobación si existe fabricante
+		$fabricante = Fabricante::find($id);
+
+		if(!$fabricante) 
+		{
+			// Deolvemos error
+			return response()->json(['errors'=>array(['code' => 404, 'message'=>'No se encuentra un fabricante con ese código'])], 404);
+		}
+
+		$nombre = $request->input('nombre');
+		$direccion = $request->input('direccion');
+		$telefono = $request->input('telefono');
+
+		// Comprobación si recibimos petición path (parcial) o put (total)
+		if($request->method() == 'PATCH')
+		{
+			$bandera = false;
+			
+			// Actualización parcial de datos
+			if($nombre!=null && $nombre!='') 
+			{
+				$fabricante->nombre = $nombre;
+				$bandera = true;
+			}
+			
+			if($direccion!=null && $direccion!='') 
+			{
+				$fabricante->direccion = $direccion;
+				$direccion = true;
+			}
+			
+			if($telefono!=null && $telefono!='') 
+			{
+				$fabricante->telefono = $telefono;
+				$bandera = true;
+			}
+
+			if($bandera) 
+			{
+				$fabricante->save();
+				return response()->json(['status'=>'ok' , 'data'=>$fabricante], 200);				
+			}
+			else
+			{
+				return response()->json(['errors'=>array(['code' => 304, 'message'=>'No se ha modificado ningún dato del fabricante'])], 304);
+			}
+		}
+
+		// Método put, actualizamos todos los campos
+
+		if(!$nombre || !$direccion || !$telefono) 
+		{
+			// 422 Unprocessable Entity
+			return response()->json(['errors'=>array(['code' => 422, 'message'=>'Faltan valores para completar el procesamiento'])], 422);
+		} 
+
+		// Actualzación de los 3 campos
+		$fabricante->nombre = $nombre;
+		$fabricante->direccion = $direccion;
+		$fabricante->telefono = $telefono;
+
+		$fabricante->save();
+
+		return response()->json(['status'=>'ok' , 'data'=>$fabricante], 200);				
 	}
 
 	/**
