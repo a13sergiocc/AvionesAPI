@@ -18,9 +18,21 @@ class FabricanteAvionController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index($idFabricante)
 	{
-		return response()->json(['status'=>'ok', 'data'=>Avion::all()], 200);
+		// Todos los aviones de un fabricante
+		$fabricante = Fabricante::find($idFabricante);
+
+		if(!$fabricante)
+		{
+			return response()->json(['errors'=>['code'=>404, 'message'=>'No se encuentra un fabricante con ese código']], 404);
+		}
+
+		return response()->json(['status'=>'ok', 'data'=>$fabricante->aviones()->get()], 200);
+		/*
+		Alternativa: 
+		return response()->json(['status'=>'ok', 'data'=>$fabricante->aviones], 200);		
+		*/
 	}
 
 
@@ -29,9 +41,31 @@ class FabricanteAvionController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store($id, Request $request)
 	{
-		//
+		$modelo = $request->input('modelo');
+		$longitud = $request->input('longitud');
+		$capacidad = $request->input('capacidad');
+		$velocidad = $request->input('velocidad');
+		$alcance = $request->input('alcance');
+
+		if(!$modelo || !$longitud || !$capacidad || !$velocidad || !$alcance)
+		{
+			return response()->json(['errors'=>array(['code'=>422, 'message' => 'Faltan datos necesarios para procesar el alta'])], 422);
+		}
+
+		$fabricante = Fabricante::find($id);
+
+		if(!$fabricante) {
+			return response()->json(['errors'=>Array(['code'=>404, 'message' => 'no se encuentra fabricante con ese código'])], 404);			
+		}
+
+		// Damos de alta el avión de ese fabricante
+		$nuevoAvion = $fabricante->aviones()->create($request->all());
+
+		$respuesta = Response::make(json_encode(['data'=>$nuevoAvion,]), 201)->header('Location', 'http://www.dominio.local/aviones/'.$nuevoAvion->serie)->header('Content-Type', 'application/json');
+
+		return $respuesta;
 	}
 
 
@@ -52,9 +86,12 @@ class FabricanteAvionController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($idFabricante)
 	{
 		//
+		$fabricante = Fabricante::find($idFabricante);
+
+		$avion = $fabricante->aviones()->find($idAvion);
 	}
 
 }

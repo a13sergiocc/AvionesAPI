@@ -31,9 +31,11 @@ class AvionController extends Controller {
 	{
 		$avion = Avion::find($id);
 
-		if(!$avion) {
+		if(!$avion) 
+		{
 			return response()->json(['errors'=>['code'=>404, 'message'=>'No se encuentra un avión con ese código']], 404);
 		}
+		
 		return response()->json(['status'=>'ok', 'data'=>$avion], 200);
 	}
 
