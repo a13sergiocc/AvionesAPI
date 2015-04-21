@@ -173,6 +173,17 @@ class FabricanteController extends Controller {
 			return response()->json(['errors'=>Array(['code'=>404, 'message' => 'no se encuentra fabricante con ese código'])], 404);			
 		}
 
+		// Comprobamos si tiene aviones. Si es así, sacamos un mensaje de error
+		$aviones = $fabricante->aviones;
+
+		if(sizeof($aviones)>0) {
+			// Para borrar todos los aviones del fabricante
+			// $fabricante->aviones->delete();
+			
+			// Código 409 Conflict
+			return response()->json(['errors'=>Array(['code'=>409, 'message' => 'este fabricante tiene aviones y no puede ser borrado'])], 409);			
+		}
+
 		$fabricante->delete();
 		// Deolvemos código 204 "No content"
 		return response()->json(['code'=> 204, 'message' => 'se ha borrado el fabricante'], 204);			

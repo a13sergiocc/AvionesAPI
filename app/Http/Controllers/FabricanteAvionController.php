@@ -75,10 +75,80 @@ class FabricanteAvionController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($idFabricante, $idAvion, Request $request)
 	{
-		//
+		$fabricante = Fabricante::find($idFabricante);
+
+		if(!$fabricante) {
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra un fabricante con ese código.'])],404);			
+		}
+
+		// Comprobamos si el avión es del fabricante
+		$avion = $fabricante->aviones()->find($idAvion);
+
+		if(!$avion) {
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra un avión con ese código que pertenezca al fabricante.'])],404);			
+		}
+
+		// Listado de campos del formulario
+		$modelo = $request->input('modelo');
+		$longitud = $request->input('longitud');
+		$capacidad = $request->input('capacidad');
+		$velocidad = $request->input('velocidad');
+		$alcance = $request->input('alcance');
+
+		// Actualización parcial
+		if($request->method()==='PATCH') {
+			$bandera = false;
+
+			if($modelo != null && $modelo !='') {
+				$avion->modelo = $modelo;
+				$bandera = true;
+			}
+			if($longitud != null && $longitud !='') {
+				$avion->longitud = $longitud;
+				$bandera = true;
+			}
+			if($capacidad != null && $capacidad !='') {
+				$avion->capacidad = $capacidad;
+				$bandera = true;
+			}
+			if($velocidad != null && $velocidad !='') {
+				$avion->velocidad = $velocidad;
+				$bandera = true;
+			}
+			if($alcance != null && $alcance !='') {
+				$avion->alcance = $alcance;
+				$bandera = true;
+			}
+
+			if($bandera) {
+				$avion->save();
+				return response()->json(['status'=>'ok' , 'data'=>$avion], 200);								
+			}
+			else {
+				return response()->json(['errors'=>array(['code' => 304, 'message'=>'No se ha modificado ningún dato del avión'])], 304);
+			}
+		}
+
+		// PUT (actualización total)
+		if(!$modelo || !$longitud || !$capacidad || !$velocidad || !$alcance || !$capacidad) 
+		{
+			// 422 Unprocessable Entity
+			return response()->json(['errors'=>array(['code' => 422, 'message'=>'Faltan valores para completar el procesamiento'])], 422);
+		} 
+
+		$avion->modelo = $modelo;
+		$avion->longitud = $longitud;
+		$avion->capacidad = $capacidad;
+		$avion->velocidad = $velocidad;
+		$avion->alcance = $alcance;
+
+		$avion->save();
+
+		return response()->json(['status'=>'ok' , 'data'=>$avion], 200);				
 	}
+
 
 	/**
 	 * Remove the specified resource from storage.
@@ -88,10 +158,22 @@ class FabricanteAvionController extends Controller {
 	 */
 	public function destroy($idFabricante)
 	{
-		//
-		$fabricante = Fabricante::find($idFabricante);
-
-		$avion = $fabricante->aviones()->find($idAvion);
-	}
+		// Compruebo si existe el fabricante.
+		$fabricante=Fabricante::find($idFabricante);
+		if (! $fabricante)
+		{
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra un fabricante con ese código.'])],404);
+		}
+		// Compruebo si existe el avion.
+		$avion=$fabricante->aviones()->find($idAvion);
+		if (! $avion)
+		{
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra un avión asociado a ese fabricante.'])],404);
+		}
+		// Borramos el avión.
+		$avion->delete();
+		// Devolvemos código 204 No Content.
+		return response()->json(['code'=>204,'message'=>'Se ha eliminado el avión correctamente.'],204);
+	}	}
 
 }
