@@ -101,23 +101,23 @@ class FabricanteAvionController extends Controller {
 		if($request->method()==='PATCH') {
 			$bandera = false;
 
-			if($modelo != null && $modelo !='') {
+			if($modelo) {
 				$avion->modelo = $modelo;
 				$bandera = true;
 			}
-			if($longitud != null && $longitud !='') {
+			if($longitud) {
 				$avion->longitud = $longitud;
 				$bandera = true;
 			}
-			if($capacidad != null && $capacidad !='') {
+			if($capacidad) {
 				$avion->capacidad = $capacidad;
 				$bandera = true;
 			}
-			if($velocidad != null && $velocidad !='') {
+			if($velocidad) {
 				$avion->velocidad = $velocidad;
 				$bandera = true;
 			}
-			if($alcance != null && $alcance !='') {
+			if($alcance) {
 				$avion->alcance = $alcance;
 				$bandera = true;
 			}
@@ -174,6 +174,6 @@ class FabricanteAvionController extends Controller {
 		$avion->delete();
 		// Devolvemos código 204 No Content.
 		return response()->json(['code'=>204,'message'=>'Se ha eliminado el avión correctamente.'],204);
-	}	}
+	}	
 
 }

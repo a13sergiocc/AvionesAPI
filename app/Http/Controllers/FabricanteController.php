@@ -111,19 +111,19 @@ class FabricanteController extends Controller {
 			$bandera = false;
 			
 			// Actualización parcial de datos
-			if($nombre!=null && $nombre!='') 
+			if($nombre) 
 			{
 				$fabricante->nombre = $nombre;
 				$bandera = true;
 			}
 			
-			if($direccion!=null && $direccion!='') 
+			if($direccion) 
 			{
 				$fabricante->direccion = $direccion;
 				$direccion = true;
 			}
 			
-			if($telefono!=null && $telefono!='') 
+			if($telefono) 
 			{
 				$fabricante->telefono = $telefono;
 				$bandera = true;
@@ -179,7 +179,7 @@ class FabricanteController extends Controller {
 		if(sizeof($aviones)>0) {
 			// Para borrar todos los aviones del fabricante
 			// $fabricante->aviones->delete();
-			
+
 			// Código 409 Conflict
 			return response()->json(['errors'=>Array(['code'=>409, 'message' => 'este fabricante tiene aviones y no puede ser borrado'])], 409);			
 		}
