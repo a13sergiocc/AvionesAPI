@@ -2,12 +2,14 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 // Cargamos fabricante
 use App\Fabricante;
 use Response;
 
-use Illuminate\Http\Request;
+// Activamos cache
+use Illuminate\Support\Facades\Cache;
 
 class FabricanteController extends Controller {
 
@@ -18,8 +20,15 @@ class FabricanteController extends Controller {
 	 */
 	public function index()
 	{
+		$fabricantes = Cache::remember('fabricantes', 15/60, function() {
+			return Fabricante::all();
+		});
+
 		// Devolvemos JSON con todos los fabricantes
-		return response()->json(['status'=>'ok', 'data'=>Fabricante::all()], 200);
+		// return response()->json(['status'=>'ok', 'data'=>Fabricante::all()], 200);
+
+		// Con caché
+		return response()->json(['status'=>'ok', 'data'=>Fabricante::$fabricantes], 200);
 	}
 
 	/**
