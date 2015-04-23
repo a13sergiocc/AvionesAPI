@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 // Cargamos fabricante
 use App\Avion;
@@ -18,7 +19,11 @@ class AvionController extends Controller {
 	 */
 	public function index()
 	{
-		return response()->json(['status'=>'ok', 'data'=>Avion::all()], 200);
+		$aviones = Cache::remember('cacheaviones', 15/60, function() {
+			return Avion::all();
+		});
+
+		return response()->json(['status'=>'ok', 'data'=>$aviones], 200);
 	}
 
 	/**

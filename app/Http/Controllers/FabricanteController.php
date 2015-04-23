@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Cache;
 
 class FabricanteController extends Controller {
 
+
+	public function __construct()
+	{
+		$this->middleware('auth.basic', ['only'=>['store', 'update', 'destroy']]);
+	}
+	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -20,7 +26,7 @@ class FabricanteController extends Controller {
 	 */
 	public function index()
 	{
-		$fabricantes = Cache::remember('fabricantes', 15/60, function() {
+		$fabricantes = Cache::remember('cachefabricantes', 15/60, function() {
 			return Fabricante::all();
 		});
 
@@ -28,7 +34,7 @@ class FabricanteController extends Controller {
 		// return response()->json(['status'=>'ok', 'data'=>Fabricante::all()], 200);
 
 		// Con caché
-		return response()->json(['status'=>'ok', 'data'=>Fabricante::$fabricantes], 200);
+		return response()->json(['status'=>'ok', 'data'=>$fabricantes], 200);
 	}
 
 	/**

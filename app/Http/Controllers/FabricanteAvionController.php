@@ -4,7 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Cache;
 
 // Cargamos fabricante
 use App\Fabricante;
@@ -13,6 +13,11 @@ use Response;
 
 class FabricanteAvionController extends Controller {
 
+	public function __construct()
+	{
+		$this->middleware('auth.basic', ['only'=>['store', 'update', 'destroy']]);
+	}
+	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -28,13 +33,16 @@ class FabricanteAvionController extends Controller {
 			return response()->json(['errors'=>['code'=>404, 'message'=>'No se encuentra un fabricante con ese código']], 404);
 		}
 
-		return response()->json(['status'=>'ok', 'data'=>$fabricante->aviones()->get()], 200);
+		$listaAviones = Cache::remember('cachefabricantesaviones', 1, function() use($fabricante) {
+			return $fabricante->aviones()->get();
+		});
+
+		return response()->json(['status'=>'ok', 'data'=>$listaAviones], 200);
 		/*
 		Alternativa: 
 		return response()->json(['status'=>'ok', 'data'=>$fabricante->aviones], 200);		
 		*/
 	}
-
 
 	/**
 	 * Store a newly created resource in storage.
